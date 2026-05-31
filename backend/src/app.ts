@@ -1,26 +1,26 @@
-import express from 'express';
-import cors from 'cors';
-// import cookieParser from "cookie-parser";
+import express from "express";
+import cors from "cors";
 import { errors } from "celebrate";
-import tasksRouter from './routes/taskRouter.js';
-import { notFoundHandler } from './middlewares/notFoundHandler.js';
-import { errorHandler } from './middlewares/errorHandler.js';
+import tasksRouter from "./routes/taskRouter.js";
+import { notFoundHandler } from "./middlewares/notFoundHandler.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
 
 const app = express();
 
 const corsOptions = {
-  origin: ['http://localhost:3000', 'http://localhost:3001'],
+  origin: ["http://localhost:3000", "http://localhost:3001"],
   methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type"]
+  allowedHeaders: ["Content-Type"],
 };
 app.use(cors(corsOptions));
-app.use(express.json({
-      type: ['application/json'],
-      limit: '100kb',
-    }));
-// app.use(cookieParser());
+app.use(
+  express.json({
+    type: ["application/json"],
+    limit: "100kb",
+  }),
+);
 
-app.use('/api', tasksRouter);
+app.use("/api", tasksRouter);
 
 app.use(notFoundHandler);
 app.use(errors());

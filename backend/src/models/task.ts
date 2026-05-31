@@ -17,6 +17,7 @@ const taskSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    // TODO 
     // userId: {
     //   type: Schema.Types.ObjectId,
     //   ref: "User",

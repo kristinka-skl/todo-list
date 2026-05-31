@@ -1,13 +1,12 @@
-import type { Request, Response, NextFunction } from 'express';
-import { isHttpError } from 'http-errors';
+import type { Request, Response, NextFunction } from "express";
+import { isHttpError } from "http-errors";
 
 export const errorHandler = (
   err: unknown,
   req: Request,
   res: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ) => {
-
   if (isHttpError(err)) {
     res.status(err.status).json({
       status: err.status,
@@ -16,10 +15,9 @@ export const errorHandler = (
     return;
   }
 
-
   console.error(err);
   res.status(500).json({
     status: 500,
-    message: 'Something went wrong',
+    message: "Something went wrong",
   });
 };

@@ -28,7 +28,7 @@ const CalendarDatePicker: React.FC<CalendarDatePickerProps> = ({
       const dateString = format(date, 'yyyy-MM-dd'); //готуємо дату в форматі рядочка для валідації Formik+Yup
       form.setFieldValue(field.name, dateString); //так ми зв'язуємо і передаємо дані react date picker в Formik
       if (onDateSelect) {
-        onDateSelect(dateString); //не обов'язковий проп, я його використовую, щоб зберігти draft завдання юзера в zustand
+        onDateSelect(dateString);
       }
     } else {
       form.setFieldValue(field.name, '');
