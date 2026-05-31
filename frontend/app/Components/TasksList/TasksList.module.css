@@ -75,13 +75,12 @@
 
 @media only screen and (min-width: 768px) {
     .taskCard {
-        width: 704px;
+        width: 100%;
     }
 }
 
 @media only screen and (min-width: 1440px) {
-    .taskCard {
-        width: 600px;
+    .taskCard {        
         margin: 0 auto;
     }
     .taskList {
