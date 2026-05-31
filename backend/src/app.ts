@@ -9,7 +9,7 @@ import { errorHandler } from './middlewares/errorHandler';
 const app = express();
 
 const corsOptions = {
-  origin: '',
+  origin: ['http://localhost:3000', 'http://localhost:3001'],
   methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type"]
 };
