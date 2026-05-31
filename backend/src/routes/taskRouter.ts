@@ -5,12 +5,12 @@ import {
   getMyTasks,
   updateTaskStatus,
   deleteTask,
-} from "../controllers/tasks.js";
+} from "../controllers/tasks";
 import {
   createTaskSchema,
   taskIdSchema,
   updateTaskStatusSchema,
-} from "../validations/tasksValidation.js";
+} from "../validations/tasksValidation";
 
 const tasksRouter = Router();
 

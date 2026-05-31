@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
 import { errors } from "celebrate";
-import tasksRouter from "./routes/taskRouter.js";
-import { notFoundHandler } from "./middlewares/notFoundHandler.js";
-import { errorHandler } from "./middlewares/errorHandler.js";
+import tasksRouter from "./routes/taskRouter";
+import { notFoundHandler } from "./middlewares/notFoundHandler";
+import { errorHandler } from "./middlewares/errorHandler";
 
 const app = express();
 
