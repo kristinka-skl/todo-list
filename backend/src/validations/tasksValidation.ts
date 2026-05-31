@@ -3,17 +3,23 @@ import { isValidObjectId } from "mongoose";
 
 const DATE_REGEXP = /^\d{4}-\d{2}-\d{2}$/;
 
-
 export const createTaskSchema = {
     [Segments.BODY]: Joi.object({
         name: Joi.string().trim().min(1).max(96).required(),
         date: Joi.string()
             .pattern(DATE_REGEXP) 
             .required()
-            .custom((value, helpers) => {
-                const today = new Date().toISOString().split('T')[0]; 
+            .custom((value: string, helpers: Joi.CustomHelpers): string | Joi.ErrorReport => {
+                
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                
+                const today: string = `${year}-${month}-${day}`; 
+                
                 if (value < today) {
-                    return helpers.message({custom: `Date must be ${today} or later`});
+                    return helpers.message({ custom: `Date must be ${today} or later` });
                 }
                 return value; 
             })

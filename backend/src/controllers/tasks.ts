@@ -1,6 +1,6 @@
 import createHttpError from 'http-errors';
 import { TasksCollection } from '../models/task.js';
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 
 export const getMyTasks = async (req: Request,
   res: Response) => {
