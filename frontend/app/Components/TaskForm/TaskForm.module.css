@@ -5,22 +5,19 @@
 }
 
 .input {
-    border: 2px solid var(--opacity-transparent);
+    border: 1px solid lightgray;
     border-radius: 12px;
     padding: 8px 12px;
     width: 100%;
     height: 37px;
-    background-color: var(--opacity-neutral-darkest-5);
-    font-family: var(--font-family);
+    background-color: transparent;
     font-size: 16px;
     line-height: 150%;
-    color: var(--color-scheme-text);
 }
-
 
 .input:focus,
 .input:hover {
-    border: 2px solid var(--color-scheme-accent);
+    border: 1px solid var(--accent);
 }
 
 .fieldset {
@@ -33,15 +30,13 @@
     display: block;
     width: 100%;
     text-align: center;
-    margin-bottom: 48px;
+    margin-bottom: 28px;
     padding: 0;
-    font-family: var(--second-family);
     font-weight: 600;
-    font-size: 24px;
+    font-size: 20px;
     line-height: 120%;
     letter-spacing: 0.01em;
-    text-align: center;
-    color: var(--color-scheme-text);
+    text-align: center;    
 }
 
 .addTaskInputSet {
@@ -51,25 +46,47 @@
 }
 
 .addTaskInput {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
 .addTaskInput label {
-    font-family: var(--font-family);
     font-size: 16px;
     line-height: 150%;
-    color: var(--color-scheme-text);
+}
+.saveBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 60px;
+  border: none;
+  padding: 16px;
+  width: 100%;
+  max-width: 335px;
+  height: 44px;
+  background-color: var(--accent);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--background);
+  cursor: pointer;
+  transition: opacity 0.3s ease;
 }
 
-@media only screen and (min-width: 1440px) {
-    .input {
-        height: 40px;
-    }
+.saveBtn:hover {
+  opacity: 0.9;
+}
+
+.saveBtn:disabled {
+  cursor: wait;
+  opacity: 0.7;
 }
 
 .error {
+    position: absolute;
+    top: 73px;
+    left: 12px;
     font-family: var(--font-family);
     font-weight: 400;
     font-size: 12px;
@@ -83,4 +100,9 @@
 
 .saveBtn {
     margin: 0 auto;
+}
+@media only screen and (min-width: 1440px) {
+    .input {
+        height: 40px;
+    }
 }

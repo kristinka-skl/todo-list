@@ -1,6 +1,6 @@
 .wrapper {
-    --primary-pink: #ffdce5;
-    --hover-pink: #fff0f5;
+    --primary-pink: var(--accent);
+    --hover: var(--accent);
     --text-dark: #333333;
     --content-width: 295px;
 
@@ -29,7 +29,7 @@
     color: var(--text-dark);
     background-color: var(--opacity-neutral-darkest-5);
 
-    border: 1px solid transparent;
+    border: 1px solid lightgray;
     border-radius: 12px;
     outline: none !important;
     box-shadow: none !important;
@@ -42,7 +42,7 @@
 .datePickerWrapper input:focus,
 .datePickerWrapper input:hover,
 .datePickerWrapper input:focus-visible {
-    border: 2 solid #ffdce5 !important;
+    border: 1px solid var(--accent) !important;
     outline: none !important;
 
 }
@@ -60,7 +60,7 @@
 }
 
 .navButton {
-    background-color: #fff0f5;
+    background-color: #ebfadc;
     border: none;
     width: 32px;
     height: 32px;
@@ -75,7 +75,7 @@
 }
 
 .navButton:hover {
-    background-color: #ffcad4;
+    background-color: #ebfadc;
 }
 
 .navButton:disabled {
@@ -85,8 +85,8 @@
 }
 
 .pinkCalendarTheme {
-    --primary-pink: #ffdce5;
-    --hover-pink: #fff0f5;
+    --primary-pink: var(--accent);
+    --hover: var(--accent);
     --text-dark: #333333;
 
     font-family: inherit;
@@ -154,12 +154,12 @@
 }
 
 .pinkCalendarTheme :global(.react-datepicker__day:hover) {
-    background-color: var(--hover-pink);
+    background-color: var(--hover);
     border-radius: 50%;
 }
 
 .pinkCalendarTheme :global(.react-datepicker__day--selected) {
-    background-color: var(--primary-pink);
+    background-color: var(--hover);
     color: var(--text-dark);
     font-weight: 600;
     border-radius: 50%;
@@ -172,12 +172,12 @@
 }
 
 .pinkCalendarTheme :global(.react-datepicker__day--keyboard-selected.react-datepicker__day--selected) {
-    background-color: var(--primary-pink);
+    background-color: var(--hover);
     font-weight: 600;
 }
 
 .pinkCalendarTheme :global(.react-datepicker__day--keyboard-selected:not(.react-datepicker__day--selected):hover) {
-    background-color: var(--hover-pink);
+    background-color: var(--hover);
 }
 
 .pinkCalendarTheme :global(.react-datepicker__day:focus) {

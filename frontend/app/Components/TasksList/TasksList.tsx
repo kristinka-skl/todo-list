@@ -112,20 +112,8 @@ function TasksReminderCard() {
     <>
       <div className={css.taskCard}>
         <div className={css.taskCardHeader}>
-          <h3 className={css.taskCardTitle}>My tasks</h3>
-          {/* <button onClick={openModal} className={css.addTaskBtn}>
-            <svg
-              width={21}
-              height={21}
-              fill={'#000000'}
-              className={css.addTaskBtnIcon}
-            >
-              <use href="/icons.svg#icon-add-circle"></use>
-            </svg>
-          </button> */}
+          <h3 className={css.taskCardTitle}>My tasks</h3>          
         </div>
-
-        {/* <AddTaskModal isOpen={isModalOpen} onClose={closeModal}></AddTaskModal> */}
 
         <>
           {isPending ? (
@@ -136,21 +124,7 @@ function TasksReminderCard() {
             <p className={css.emptyState}>You do not have any tasks yet</p>
           )}
         </>
-        {/* ) : (
-          <ul className={css.taskList}>
-            <li>
-              <p className={css.subTitleTaskList}>
-                Наразі немає жодних завдань
-              </p>
-              <p>Створіть мерщій нове завдання!</p>
-            </li>
-            <li> */}
-        {/* <button onClick={handleCreateTaskBtnClick}>
-                Створити завдання
-              </button> */}
-        {/* </li>
-          </ul> */}
-
+       
         <Toaster position="top-right" reverseOrder={false} />
       </div>
     </>
