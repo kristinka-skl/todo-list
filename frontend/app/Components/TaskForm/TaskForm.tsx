@@ -106,6 +106,7 @@ export default function TaskForm({ afterSubmit }: AddTaskFormProps) {
                   <Field
                     type="text"
                     name="name"
+                    
                     id={`${fieldId}-name`}
                     placeholder="I am going to ..."
                     onChange={handleNameChange}

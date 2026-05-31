@@ -30,3 +30,13 @@ export async function updateTaskStatus({
   );
   return data;
 }
+
+export async function deleteTask(
+  id: string,  
+): Promise<Task> {
+  const { data } = await nextServer.delete<Task>(
+    `/tasks/${id}`,
+    
+  );
+  return data;
+}
