@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/server.js"
+    "dev": "tsx watch src/server.ts"
   },
   "keywords": [],
   "author": "Kristinka Skliarchuk <kristinka.skl@gmail.com>",
@@ -14,19 +14,21 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@todo-list/interfaces": "0.1.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
     "@types/node": "^20",
     "eslint": "^10.4.1",
     "globals": "^17.6.0",
     "jiti": "^2.7.0",
     "nodemon": "^3.1.14",
     "typescript-eslint": "^8.60.0",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6"
+    "tsx": "^4.21.0"
   },
   "dependencies": {
     "celebrate": "^15.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "mongoose": "^9.6.3"
   }
 }
