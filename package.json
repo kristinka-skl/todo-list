@@ -1,0 +1,14 @@
+{
+  "name": "todo-list",
+  "workspaces": ["frontend", "backend", "interfaces"],
+  "scripts": {
+    "start:frontend": "npm run dev --workspace=frontend",
+    "start:backend": "npm run dev --workspace=backend"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "globals": "^17.6.0",
+    "jiti": "^2.7.0",
+    "nodemon": "^3.1.14"
+  }
+}
