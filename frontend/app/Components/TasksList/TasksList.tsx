@@ -1,7 +1,7 @@
 "use client";
 import { Toaster } from "react-hot-toast";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import toast from "react-hot-toast";
 import TaskItem from "../TaskItem/TaskItem";
 import css from "./TasksList.module.css";
