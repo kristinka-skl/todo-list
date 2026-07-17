@@ -1,6 +1,6 @@
-import app from '../app';
+import app from '../app.js';
 import supertest from 'supertest';
-import { clearDatabase, closeDatabase, connectDatabase } from './db';
+import { clearDatabase, closeDatabase, connectDatabase } from './db.js';
 import { describe, beforeAll, afterEach, afterAll, test, expect } from '@jest/globals';
 import { format } from 'date-fns';
 

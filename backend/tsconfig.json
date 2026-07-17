@@ -6,13 +6,12 @@
 
     // Environment Settings
 
-    "module": "commonjs",
-    "target": "esnext",
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
     "types": [],
-    "typeRoots": [
-      "@types",
-      "./node_modules/@types",
-    ],
+    "typeRoots": ["@types", "./node_modules/@types"],
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
@@ -43,7 +42,7 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
