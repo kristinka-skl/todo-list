@@ -7,11 +7,14 @@ import TaskItem from "../TaskItem/TaskItem";
 import css from "./TasksList.module.css";
 import { isSameDay, addDays, isAfter, startOfDay, isBefore } from "date-fns";
 import { getTasks } from "@/app/lib/api/api";
+import SearchForm from "../SearchForm/SearchForm";
+import { useDebouncedCallback } from "use-debounce";
 
 function TasksReminderCard() {
+  const [query, setQuery] = useState("");
   const { data, isError, isSuccess, isPending } = useQuery({
-    queryKey: ["task"],
-    queryFn: () => getTasks(),
+    queryKey: ["task", query],
+    queryFn: () => getTasks(query),
     placeholderData: keepPreviousData,
     refetchOnMount: false,
   });
@@ -22,7 +25,7 @@ function TasksReminderCard() {
       toast("Sorry, something went wrong, please try again");
     }
   }, [isError]);
-
+  
   const { overdueTasks, todayTasks, weekTasks, futureTasks } = useMemo(() => {
     if (!data)
       return {
@@ -107,12 +110,15 @@ function TasksReminderCard() {
       </div>
     );
   }
-
+  const changeQuery = useDebouncedCallback((query: string) => {
+    setQuery(query);
+  }, 1000);
   return (
     <>
       <div className={css.taskCard}>
         <div className={css.taskCardHeader}>
-          <h3 className={css.taskCardTitle}>My tasks</h3>          
+          <h3 className={css.taskCardTitle}>My tasks</h3>
+          <SearchForm onChange={changeQuery} />
         </div>
 
         <>
@@ -124,7 +130,7 @@ function TasksReminderCard() {
             <p className={css.emptyState}>You do not have any tasks yet</p>
           )}
         </>
-       
+
         <Toaster position="top-right" reverseOrder={false} />
       </div>
     </>

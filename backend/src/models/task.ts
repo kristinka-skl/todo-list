@@ -25,5 +25,7 @@ const taskSchema = new Schema({
     // },
 }, { timestamps: true, versionKey: false });
 
+taskSchema.index({ name: 1 });
+
 export const TasksCollection = model('Task', taskSchema);
 

@@ -3,8 +3,22 @@ import { TasksCollection } from "../models/task.js";
 import type { Request, Response, NextFunction } from "express";
 
 export const getMyTasks = async (req: Request, res: Response) => {
-  const tasks = await TasksCollection.find() // TODO { userId: req.user._id }
-    .sort({ date: 1 });
+  const { search } = req.query;  
+
+  const tasksQuery = TasksCollection.find(); // TODO { userId: req.user._id }
+  
+  if (search) {
+    tasksQuery.where({ 
+      name: { 
+        $regex: search, 
+        $options: "i" 
+      } 
+    });
+  }
+  
+  tasksQuery.sort({ date: 1 });
+  const tasks = await tasksQuery;
+  
   res.status(200).json(tasks);
 };
 

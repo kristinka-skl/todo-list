@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { TasksCollection } from "../models/task.js";
 
 export const connectMongoDB = async () => {
   try {
@@ -6,6 +7,8 @@ export const connectMongoDB = async () => {
     if (!mongoUrl) throw new Error("Missing env MONGODB_URL");
     await mongoose.connect(mongoUrl);
     console.log("✅ MongoDB connection established successfully");
+    await   TasksCollection.syncIndexes();
+    console.log("Indexes synced successfully");
   } catch (error) {
     if (error instanceof Error) {
       console.error("❌ Failed to connect to MongoDB:", error.message);

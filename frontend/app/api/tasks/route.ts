@@ -1,12 +1,17 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { cookies } from "next/headers";
 import { isAxiosError } from "axios";
 
 import { api } from "../api";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const res = await api("/tasks");
+    const query = request.nextUrl.searchParams.get('search') ?? '';
+    const res = await api("/tasks", {
+    params: {
+      search: query,
+    },
+  });
     return NextResponse.json(res.data, { status: res.status });
   } catch (error) {
     if (isAxiosError(error)) {

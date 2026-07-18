@@ -1,6 +1,6 @@
 .wrapper {
     --primary-pink: var(--accent);
-    --hover: var(--accent);
+    --hover: hsl(var(--accent));
     --text-dark: #333333;
     --content-width: 295px;
 
@@ -42,7 +42,7 @@
 .datePickerWrapper input:focus,
 .datePickerWrapper input:hover,
 .datePickerWrapper input:focus-visible {
-    border: 1px solid var(--accent) !important;
+    border: 1px solid hsl(var(--accent)) !important;
     outline: none !important;
 
 }
@@ -191,4 +191,11 @@
 .pinkCalendarTheme :global(.react-datepicker__day--outside-month) {
     color: #e0e0e0;
     pointer-events: none;
+}
+
+
+@media only screen and (min-width: 1440px) {
+    .datePickerWrapper input {
+        height: 40px;
+    }
 }

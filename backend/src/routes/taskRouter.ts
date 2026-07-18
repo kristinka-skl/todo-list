@@ -5,16 +5,17 @@ import {
   getMyTasks,
   updateTaskStatus,
   deleteTask,
-} from "../controllers/tasks";
+} from "../controllers/tasks.js";
 import {
   createTaskSchema,
+  getTasksQuerySchema,
   taskIdSchema,
   updateTaskStatusSchema,
-} from "../validations/tasksValidation";
+} from "../validations/tasksValidation.js";
 
 const tasksRouter = Router();
 
-tasksRouter.get("/tasks", getMyTasks);
+tasksRouter.get("/tasks", celebrate(getTasksQuerySchema), getMyTasks);
 tasksRouter.post("/tasks", celebrate(createTaskSchema), createTask);
 tasksRouter.patch(
   "/tasks/:taskId",

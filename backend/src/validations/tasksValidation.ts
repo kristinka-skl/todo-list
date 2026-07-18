@@ -3,6 +3,14 @@ import { isValidObjectId } from "mongoose";
 
 const DATE_REGEXP = /^\d{4}-\d{2}-\d{2}$/;
 
+export const getTasksQuerySchema = {
+  [Segments.QUERY]: Joi.object({
+    // page: Joi.number().integer().min(1).default(1),
+    // perPage: Joi.number().integer().min(5).max(20).default(10),    
+    search: Joi.string().trim().allow(''),
+  }),
+}
+
 export const createTaskSchema = {
   [Segments.BODY]: Joi.object({
     name: Joi.string().trim().min(1).max(96).required(),
@@ -33,7 +41,7 @@ export const createTaskSchema = {
         "string.pattern.base": "Date format must be YYYY-MM-DD",
         "any.required": "Date is required",
       }),
-    isDone: Joi.boolean().default(false),
+    isDone: Joi.boolean().default(false),    
   }),
 };
 

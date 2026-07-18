@@ -1,6 +1,10 @@
 {
   "name": "todo-list",
-  "workspaces": ["frontend", "backend", "interfaces"],
+  "workspaces": [
+    "frontend",
+    "backend",
+    "interfaces"
+  ],
   "scripts": {
     "dev:frontend": "npm run dev --workspace=frontend",
     "build:frontend": "npm run build --workspace=frontend",
@@ -8,9 +12,12 @@
     "test": "npm run test --workspace=backend"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "autoprefixer": "^10.5.4",
     "globals": "^17.6.0",
     "jiti": "^2.7.0",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "postcss": "^8.5.19",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5"
   }
 }
