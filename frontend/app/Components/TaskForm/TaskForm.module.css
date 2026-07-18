@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     margin: 0 auto;
+    gap: 24px;
 }
 
 .input {
@@ -17,7 +18,7 @@
 
 .input:focus,
 .input:hover {
-    border: 1px solid var(--accent);
+    border: 1px solid hsl(var(--accent));
 }
 
 .fieldset {
@@ -66,9 +67,9 @@
   width: 100%;
   max-width: 335px;
   height: 44px;
-  background-color: var(--accent);
+  background-color: hsl(var(--accent));
   font-weight: 500;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--background);
   cursor: pointer;
   transition: opacity 0.3s ease;

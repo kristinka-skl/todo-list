@@ -25,10 +25,7 @@ const taskSchema = new Schema({
     // },
 }, { timestamps: true, versionKey: false });
 
-taskSchema.index({ name: "text"}, {
-    name: "TaskTextIndex",
-    default_language: "english",
-  });
+taskSchema.index({ name: 1 });
 
 export const TasksCollection = model('Task', taskSchema);
 
