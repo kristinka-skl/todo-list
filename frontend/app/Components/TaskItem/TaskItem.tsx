@@ -1,16 +1,29 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import css from "./TaskItem.module.css";
 import { format } from "date-fns";
 import { deleteTask, updateTaskStatus } from "@/app/lib/api/api";
 import { Task } from "../../../../interfaces";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
+
+import { cn } from "@/lib/utils";
 
 interface TaskItemProps {
   task: Task;
 }
 
+const getPriorityBadgeStyles = (priority: string | number) => {
+  const p = Number(priority);
+  if (isNaN(p)) return "bg-gray-500/20 text-foreground";
+  if (p >= 8) return "bg-red-500/20 text-foreground";     
+  if (p >= 4) return "bg-amber-500/20 text-foreground";   
+  return "bg-gray-500/20 text-foreground";             
+};
+
 export default function TaskItem({ task }: TaskItemProps) {
   const queryClient = useQueryClient();
+
   const { mutate: mutateDelete } = useMutation({
     mutationFn: async (id: string) => await deleteTask(id),
     onSuccess: () => {
@@ -21,9 +34,9 @@ export default function TaskItem({ task }: TaskItemProps) {
       toast.error("Sorry, something went wrong. Please try again.");
     },
   });
+
   const { mutate: mutateUpdate, isPending } = useMutation({
     mutationFn: updateTaskStatus,
-
     onMutate: async (newStatus) => {
       await queryClient.cancelQueries({ queryKey: ["task"] });
       const previousTasks = queryClient.getQueryData<Task[]>(["task"]);
@@ -35,52 +48,76 @@ export default function TaskItem({ task }: TaskItemProps) {
       });
       return { previousTasks };
     },
-
     onError: (err, newStatus, context) => {
       if (context?.previousTasks) {
         queryClient.setQueryData(["task"], context.previousTasks);
       }
       toast.error("Failed to update task");
     },
-
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["task"] });
     },
   });
-  const handleChange = () => {
-    mutateUpdate({ id: task._id, isDone: !task.isDone });
-  };
+
   const formattedDate = task.date ? format(new Date(task.date), "dd.MM") : "";
-  const handleDeleteTask = () => {
-    mutateDelete(task._id);
-  };
+
   return (
-    <li className={task.isDone ? "done-style" : ""}>
-      <p className={css.taskItemDate}>{formattedDate}</p>
-      <div className={css.taskItemText}>
-        <div className={css.iconsWrapper}>
-          <p>{task.priority}</p>
-          <div className={css.checkboxWrapper}>
-            <input
-              type="checkbox"
-              checked={task.isDone}
-              onChange={handleChange}
-              className={css.taskItemCheckbox}
-              id={`task-${task._id}`}
-            />
-            <svg className={css.checkMarkIcon} aria-hidden="true">
-              <use href="/sprite.svg#icon-checkbox" />
-            </svg>
-          </div>
-        </div>
-        <p className={task.isDone ? css.textDone : ""}>{task.name}</p>
-         <svg
-            className={css.deleteIcon}
-            onClick={handleDeleteTask}
-            aria-hidden="true"
-          >
-            <use href="/sprite.svg#icon-trash" />
-          </svg>
+    <li
+      className={cn(
+        "grid grid-cols-[36px_24px_1fr_40px_32px] gap-2 items-center",
+        
+        "md:grid-cols-[40px_24px_1fr_48px_36px] md:gap-4",
+        "py-2 px-1 border-b border-border/40 last:border-none rounded-lg transition-colors hover:bg-muted/50",
+      )}
+    >
+     
+      <div className="flex justify-center items-center">
+        <span
+          className={cn(
+            "text-base font-bold px-2 py-0.5 rounded-lg w-fit text-center",
+            getPriorityBadgeStyles(task.priority)
+          )}
+        >
+          {task.priority}
+        </span>
+      </div>
+
+      <div className="flex justify-center">
+        <Checkbox
+          checked={task.isDone}
+          onCheckedChange={(checked) =>
+            mutateUpdate({ id: task._id, isDone: checked as boolean })
+          }
+          disabled={isPending}
+          id={`task-${task._id}`}
+          className="h-5 w-5 border-gray-400 data-[state=checked]:bg-accent data-[state=checked]:border-accent data-[state=checked]:text-white"
+        />
+      </div>
+
+      <label
+        htmlFor={`task-${task._id}`}
+        className={cn(
+          "text-base font-medium truncate cursor-pointer select-none",
+          task.isDone && "line-through",
+        )}
+      >
+        {task.name}
+      </label>
+
+      <span className="text-base text-muted-foreground text-right whitespace-nowrap">
+        {formattedDate}
+      </span>
+
+      <div className="flex justify-end">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+          onClick={() => mutateDelete(task._id)}
+          aria-label="Delete task"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
       </div>
     </li>
   );
