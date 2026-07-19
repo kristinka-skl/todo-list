@@ -3,7 +3,8 @@ import { TasksCollection } from "../models/task.js";
 import type { Request, Response, NextFunction } from "express";
 
 export const getMyTasks = async (req: Request, res: Response) => {
-  const { search } = req.query;  
+  const { search, status } = req.query; 
+   
 
   const tasksQuery = TasksCollection.find(); // TODO { userId: req.user._id }
   
@@ -13,6 +14,12 @@ export const getMyTasks = async (req: Request, res: Response) => {
         $regex: search, 
         $options: "i" 
       } 
+    });
+  }
+
+  if(status && status !== "all"){
+    tasksQuery.where({ 
+      isDone: status === 'done'
     });
   }
   

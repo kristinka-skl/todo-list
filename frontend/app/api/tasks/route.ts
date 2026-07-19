@@ -7,9 +7,11 @@ import { api } from "../api";
 export async function GET(request: NextRequest) {
   try {
     const query = request.nextUrl.searchParams.get('search') ?? '';
+    const status = request.nextUrl.searchParams.get('status') ?? '';
     const res = await api("/tasks", {
     params: {
       search: query,
+      status: status,
     },
   });
     return NextResponse.json(res.data, { status: res.status });

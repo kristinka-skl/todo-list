@@ -8,15 +8,16 @@ import { useDebouncedCallback } from "use-debounce";
 import { getTasks } from "@/app/lib/api/api";
 
 import TaskItem from "../TaskItem/TaskItem";
-import SearchForm from "../SearchForm/SearchForm";
+import Filters from "../Filters/Filters";
 import { cn } from "@/lib/utils";
 
 function TasksReminderCard() {
-  const [query, setQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusQuery, setStatusQuery] = useState("all");
   
   const { data, isError, isSuccess, isPending } = useQuery({
-    queryKey: ["task", query],
-    queryFn: () => getTasks(query),
+    queryKey: ["task", searchQuery, statusQuery],
+    queryFn: () => getTasks(searchQuery, statusQuery),
     placeholderData: keepPreviousData,
     refetchOnMount: false,
   });
@@ -88,7 +89,7 @@ function TasksReminderCard() {
   };
 
   const changeQuery = useDebouncedCallback((query: string) => {
-    setQuery(query);
+    setSearchQuery(query);
   }, 1000);
 
   return (
@@ -100,7 +101,7 @@ function TasksReminderCard() {
             My tasks
           </h3>
           <div className="w-full">
-            <SearchForm onChange={changeQuery} />
+            <Filters onStatusFilterChange={(status)=>setStatusQuery(status)} onSearchChange={changeQuery} />
           </div>
         </div>
 
