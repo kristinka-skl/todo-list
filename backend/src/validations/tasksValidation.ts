@@ -14,6 +14,7 @@ export const getTasksQuerySchema = {
 export const createTaskSchema = {
   [Segments.BODY]: Joi.object({
     name: Joi.string().trim().min(1).max(96).required(),
+    priority: Joi.number().min(1).max(10).required(),
     date: Joi.string()
       .pattern(DATE_REGEXP)
       .required()

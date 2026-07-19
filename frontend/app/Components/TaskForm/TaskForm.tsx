@@ -17,6 +17,7 @@ const todayString = format(today, "yyyy-MM-dd");
 
 interface TaskFormValues {
   name: string;
+  priority: number;
   date: string;
 }
 
@@ -26,6 +27,7 @@ const TaskFormSchema = Yup.object().shape({
     .min(1, "Min 1 symbol")
     .max(96, "Max 96 symbols")
     .required("Enter task"),
+  priority: Yup.number().min(1).max(10).required(),
   date: Yup.string()
     .matches(/^\d{4}-\d{2}-\d{2}$/, "Format must be YYYY-MM-DD")
     .test("min-date", "Date cannot be in the past", (value) => {
@@ -45,6 +47,7 @@ export default function TaskForm({ afterSubmit }: AddTaskFormProps) {
   const { draft, setDraft, clearDraft } = useTaskStore();
   const initialValues: TaskFormValues = {
     name: draft.name || "",
+    priority: draft.priority || 1,
     date: draft.date || todayString,
   };
 
@@ -73,7 +76,7 @@ export default function TaskForm({ afterSubmit }: AddTaskFormProps) {
       onSuccess: () => {
         clearDraft();
         actions.resetForm({
-          values: { name: "", date: todayString },
+          values: { name: "", priority: 1, date: todayString },
         });
       },
     });
@@ -91,7 +94,12 @@ export default function TaskForm({ afterSubmit }: AddTaskFormProps) {
           handleChange(e);
           setDraft({ ...values, name: e.target.value });
         };
-
+        const handlePriorityChange = (
+          e: React.ChangeEvent<HTMLInputElement>,
+        ) => {
+          handleChange(e);
+          setDraft({ ...values, priority: Number(e.target.value) });
+        };
         const handleDateChange = (dateString: string) => {
           setDraft({ ...values, date: dateString });
         };
@@ -106,7 +114,6 @@ export default function TaskForm({ afterSubmit }: AddTaskFormProps) {
                   <Field
                     type="text"
                     name="name"
-                    
                     id={`${fieldId}-name`}
                     placeholder="I am going to ..."
                     onChange={handleNameChange}
@@ -120,6 +127,33 @@ export default function TaskForm({ afterSubmit }: AddTaskFormProps) {
                     className={css.error}
                   />
                 </div>
+
+                <div className={css.addTaskInput}>
+                  <label htmlFor={`${fieldId}-priority`}>Task priority</label>
+                  <Field
+                    as="select"
+                    name="priority"
+                    id={`${fieldId}-priority`}
+                    onChange={handlePriorityChange}
+                    className={`${css.input} ${
+                      errors.priority && touched.priority ? css.inputError : ""
+                    }`}
+                  >
+                    {Array.from({ length: 10 }, (_, index) => index + 1).map(
+                      (num) => (
+                        <option key={num} value={num}>
+                          {num}
+                        </option>
+                      ),
+                    )}
+                  </Field>
+                  <ErrorMessage
+                    name="priority"
+                    component="span"
+                    className={css.error}
+                  />
+                </div>
+
                 <div className={css.addTaskInput}>
                   <label htmlFor={`${fieldId}-date`}>Date</label>
                   <Field

@@ -11,14 +11,14 @@ interface TaskItemProps {
 
 export default function TaskItem({ task }: TaskItemProps) {
   const queryClient = useQueryClient();
-const { mutate: mutateDelete } = useMutation({
+  const { mutate: mutateDelete } = useMutation({
     mutationFn: async (id: string) => await deleteTask(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['task'] });
-      toast.success('Successfully deleted!');
+      queryClient.invalidateQueries({ queryKey: ["task"] });
+      toast.success("Successfully deleted!");
     },
     onError: () => {
-      toast.error('Sorry, something went wrong. Please try again.');
+      toast.error("Sorry, something went wrong. Please try again.");
     },
   });
   const { mutate: mutateUpdate, isPending } = useMutation({
@@ -51,17 +51,15 @@ const { mutate: mutateDelete } = useMutation({
     mutateUpdate({ id: task._id, isDone: !task.isDone });
   };
   const formattedDate = task.date ? format(new Date(task.date), "dd.MM") : "";
-const handleDeleteTask = ()=>{
-mutateDelete(task._id);
-}
+  const handleDeleteTask = () => {
+    mutateDelete(task._id);
+  };
   return (
     <li className={task.isDone ? "done-style" : ""}>
       <p className={css.taskItemDate}>{formattedDate}</p>
       <div className={css.taskItemText}>
-        <div className={css.iconsWrapper}>          
-            <svg className={css.deleteIcon} onClick={handleDeleteTask} aria-hidden="true">
-              <use href="/sprite.svg#icon-trash" />
-            </svg>          
+        <div className={css.iconsWrapper}>
+          <p>{task.priority}</p>
           <div className={css.checkboxWrapper}>
             <input
               type="checkbox"
@@ -76,6 +74,13 @@ mutateDelete(task._id);
           </div>
         </div>
         <p className={task.isDone ? css.textDone : ""}>{task.name}</p>
+         <svg
+            className={css.deleteIcon}
+            onClick={handleDeleteTask}
+            aria-hidden="true"
+          >
+            <use href="/sprite.svg#icon-trash" />
+          </svg>
       </div>
     </li>
   );
