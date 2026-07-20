@@ -1,4 +1,4 @@
-import axios, { type AxiosInstance } from "axios";
+import axios, { isAxiosError, type AxiosInstance } from "axios";
 import { Task, TaskFormData, UpdateTaskStatus } from "../../../../interfaces";
 
 const BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "") + "/api";
@@ -8,14 +8,17 @@ export const nextServer: AxiosInstance = axios.create({
 });
 
 export async function getTasks(query: string, status: string, order: number | undefined): Promise<Task[]> {
-  const { data } = await nextServer.get<Task[]>(`/tasks`, {
-    params: {
-      search: query,
-      status: status,
-      sorting: order,
-    },
-  });
-  return data;
+  try {
+    const { data } = await nextServer.get<Task[]>(`/tasks`, {
+      params: { search: query, status: status, sorting: order },
+    });
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response?.data) {
+      throw new Error(error.response.data.error || "Failed to fetch tasks");
+    }
+    throw new Error("Network error occurred");
+  }
 }
 
 export async function createTask(newTask: TaskFormData): Promise<Task> {
