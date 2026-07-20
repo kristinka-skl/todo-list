@@ -3,7 +3,8 @@ import { TasksCollection } from "../models/task.js";
 import type { Request, Response, NextFunction } from "express";
 
 export const getMyTasks = async (req: Request, res: Response) => {
-  const { search } = req.query;  
+  const { search, status, sorting } = req.query; 
+   const sortingOrder = Number(sorting);
 
   const tasksQuery = TasksCollection.find(); // TODO { userId: req.user._id }
   
@@ -15,7 +16,22 @@ export const getMyTasks = async (req: Request, res: Response) => {
       } 
     });
   }
+
+  if(status && status !== "all"){
+    tasksQuery.where({ 
+      isDone: status === 'done'
+    });
+  }
   
+
+  if(sorting && sortingOrder === 1){
+    tasksQuery.sort({ priority: 1 });
+  } else if(sorting && sortingOrder === 0){
+    tasksQuery.sort({ priority: -1 });
+  }
+  
+
+
   tasksQuery.sort({ date: 1 });
   const tasks = await tasksQuery;
   

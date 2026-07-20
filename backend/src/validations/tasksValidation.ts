@@ -8,12 +8,15 @@ export const getTasksQuerySchema = {
     // page: Joi.number().integer().min(1).default(1),
     // perPage: Joi.number().integer().min(5).max(20).default(10),    
     search: Joi.string().trim().allow(''),
+    status: Joi.string().valid('all', 'done', 'undone'),
+    sorting: Joi.string().trim().allow(''),
   }),
 }
 
 export const createTaskSchema = {
   [Segments.BODY]: Joi.object({
     name: Joi.string().trim().min(1).max(96).required(),
+    priority: Joi.number().min(1).max(10).required(),
     date: Joi.string()
       .pattern(DATE_REGEXP)
       .required()
