@@ -16,7 +16,7 @@ function TasksReminderCard() {
   const [statusQuery, setStatusQuery] = useState("all");
   const [sortingOrder, setSortingOrder] = useState<number | undefined>(undefined);
 
-  const { data, isError, isSuccess, isPending } = useQuery({
+  const { data, isError, error, isSuccess, isPending } = useQuery({
     queryKey: ["task", searchQuery, statusQuery, sortingOrder],
     queryFn: () => getTasks(searchQuery, statusQuery, sortingOrder),
     placeholderData: keepPreviousData,
@@ -25,10 +25,9 @@ function TasksReminderCard() {
 
   useEffect(() => {
     if (isError) {
-      console.log("smth went wrong in get tasks");
-      toast.error("Sorry, something went wrong, please try again");
+      toast.error(error?.message || "Database connection failure");
     }
-  }, [isError]);
+  }, [isError, error]);
 
   const { overdueTasks, todayTasks, weekTasks, futureTasks } = useMemo(() => {
     if (!data)
@@ -122,11 +121,24 @@ function TasksReminderCard() {
 
         <div className="flex flex-col w-full">
           {isPending ? (
-            <p className="text-center text-muted-foreground py-8 animate-pulse">
-              Loading tasks...
+          <p className="text-center text-muted-foreground py-8 animate-pulse">
+            Loading tasks...
+          </p>
+        ) : isError ? (
+          <div className="text-center py-8 px-4 border border-destructive/20 bg-destructive/5 rounded-2xl flex flex-col gap-2">
+            <p className="font-semibold text-destructive">Service is temporarily unavailable</p>
+            <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+              We&apos;re having trouble connecting to the database. Please verify your connection or try again later.
             </p>
-          ) : isSuccess && data?.length > 0 ? (
-            <>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="mt-2 text-xs bg-destructive text-white px-3 py-1.5 rounded-lg w-fit mx-auto hover:opacity-90 transition-opacity"
+            >
+              Reload application
+            </button>
+          </div>
+        ) : isSuccess && data?.length > 0 ? (
+          <>
               {renderTaskSection("Overdue", overdueTasks, true)}
               {renderTaskSection("Today", todayTasks)}
               {renderTaskSection("This week", weekTasks)}
