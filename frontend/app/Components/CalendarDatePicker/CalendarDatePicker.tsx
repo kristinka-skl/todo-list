@@ -1,32 +1,33 @@
 'use client';
+
 import { FieldProps } from 'formik';
-import DatePicker, { registerLocale } from 'react-datepicker';
+import DatePicker from 'react-datepicker';
 import { format } from 'date-fns';
 import 'react-datepicker/dist/react-datepicker.css';
-import { uk } from 'date-fns/locale/uk';
-import css from './CalendarDatePicker.module.css';
-
-registerLocale('uk', uk);
+import { enUS } from 'date-fns/locale/en-US';
 
 interface CalendarDatePickerProps extends FieldProps {
   onDateSelect?: (dateStr: string) => void;
   placeholderText?: string;
   className?: string;
-  disabled?: boolean; //кастомні пропси, щоб використовувати можливості react date picker, за потреби можна розширити
+  disabled?: boolean; 
 }
 
 const CalendarDatePicker: React.FC<CalendarDatePickerProps> = ({
   form,
   field,
   onDateSelect,
+  className,
   ...props
 }) => {
-  const dateValue = field.value ? new Date(field.value) : null; //формуємо початкове значення
+  const dateValue = field.value ? new Date(field.value) : null;
 
   const handleChange = (date: Date | null) => {
     if (date) {
-      const dateString = format(date, 'yyyy-MM-dd'); //готуємо дату в форматі рядочка для валідації Formik+Yup
-      form.setFieldValue(field.name, dateString); //так ми зв'язуємо і передаємо дані react date picker в Formik
+      const dateString = format(date, 'yyyy-MM-dd');
+      
+      form.setFieldValue(field.name, dateString);
+      
       if (onDateSelect) {
         onDateSelect(dateString);
       }
@@ -34,10 +35,9 @@ const CalendarDatePicker: React.FC<CalendarDatePickerProps> = ({
       form.setFieldValue(field.name, '');
     }
   };
-  const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
   return (
-    <div className="custom-datepicker-wrapper">
+    <div className="w-full flex justify-center [&_.react-datepicker__input-container]:block [&_.react-datepicker__input-container]:w-full relative">
       <DatePicker
         {...props}
         id={field.name}
@@ -45,11 +45,11 @@ const CalendarDatePicker: React.FC<CalendarDatePickerProps> = ({
         selected={dateValue}
         onChange={handleChange}
         minDate={new Date()}
-        locale="uk"
-        className={css.inputField}
-        calendarClassName={css.pinkCalendarTheme}
-        wrapperClassName={css.datePickerWrapper}
-        popperPlacement="bottom-start"
+        locale={enUS}
+        className={className}
+        calendarClassName="custom-datepicker"
+        wrapperClassName="block w-full"
+        popperPlacement="bottom"        
         renderCustomHeader={({
           date,
           decreaseMonth,
@@ -57,27 +57,16 @@ const CalendarDatePicker: React.FC<CalendarDatePickerProps> = ({
           prevMonthButtonDisabled,
           nextMonthButtonDisabled,
         }) => (
-          <div
-            className="react-datepicker__custom-header"
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: 10,
-            }}
-          >
-            <div className={css.monthTitle}>
-              {format(date, 'LLLL yyyy', { locale: uk })
-                .charAt(0)
-                .toUpperCase() +
-                format(date, 'LLLL yyyy', { locale: uk }).slice(1)}
+          <div className="flex justify-between items-center mb-[14px] w-full px-2">
+            <div className="text-[18px] font-semibold text-foreground capitalize">
+              {format(date, 'LLLL yyyy', { locale: enUS })}
             </div>
-            <div className={css.navContainer}>
+            <div className="flex gap-2">
               <button
                 type="button"
                 onClick={decreaseMonth}
                 disabled={prevMonthButtonDisabled}
-                className={css.navButton}
+                className="bg-[#ebfadc] dark:bg-[#46532e38] border-none w-8 h-8 rounded-full flex items-center justify-center cursor-pointer text-foreground text-base transition-colors duration-200 hover:bg-accent/20 dark:hover:bg-[#46532e50] disabled:bg-transparent disabled:cursor-default disabled:opacity-30"
               >
                 ←
               </button>
@@ -85,7 +74,7 @@ const CalendarDatePicker: React.FC<CalendarDatePickerProps> = ({
                 type="button"
                 onClick={increaseMonth}
                 disabled={nextMonthButtonDisabled}
-                className={css.navButton}
+                className="bg-[#ebfadc] dark:bg-[#46532e38] border-none w-8 h-8 rounded-full flex items-center justify-center cursor-pointer text-foreground text-base transition-colors duration-200 hover:bg-accent/20 dark:hover:bg-[#46532e50] disabled:bg-transparent disabled:cursor-default disabled:opacity-30"
               >
                 →
               </button>
@@ -98,16 +87,3 @@ const CalendarDatePicker: React.FC<CalendarDatePickerProps> = ({
 };
 
 export default CalendarDatePicker;
-
-//приклад використання з Formik:
-
-{
-  /* <Field
-      id={`${fieldId}-date`}
-      name="date"
-      component={CalendarDatePicker}
-      onDateChange={handleDateChange}
-      className="date-picker"
-      wrapperClassName="date-picker-wrapper"
-    /> */
-}

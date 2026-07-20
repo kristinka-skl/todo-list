@@ -10,7 +10,14 @@ import toast from "react-hot-toast";
 import CalendarDatePicker from "../CalendarDatePicker/CalendarDatePicker";
 import { useTaskStore } from "@/app/lib/store/taskStore";
 import { createTask } from "@/app/lib/api/api";
-import { ChevronDown } from "lucide-react"; 
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const today = new Date();
 today.setHours(0, 0, 0, 0);
@@ -83,7 +90,7 @@ export default function TaskForm({ afterSubmit }: AddTaskFormProps) {
   };
 
   const baseInputStyles =
-    "w-full h-[37px] min-[1440px]:h-[40px] px-3 py-2 border border-gray-300 rounded-xl bg-transparent text-base leading-snug outline-none transition-colors hover:border-accent focus:border-accent";
+    "w-full h-[37px] min-[1440px]:h-[40px] px-3 py-2 border border-gray-300 rounded-xl bg-transparent text-base leading-snug outline-none transition-colors hover:border-accent focus:border-accent focus:ring-0";
   const errorInputStyles = "!border-[var(--color-red)]";
 
   return (
@@ -93,17 +100,18 @@ export default function TaskForm({ afterSubmit }: AddTaskFormProps) {
       validationSchema={TaskFormSchema}
       enableReinitialize
     >
-      {({ values, handleChange, errors, touched }) => {
+      {({ values, handleChange, setFieldValue, errors, touched }) => {
         const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           handleChange(e);
           setDraft({ ...values, name: e.target.value });
         };
-        const handlePriorityChange = (
-          e: React.ChangeEvent<HTMLInputElement>,
-        ) => {
-          handleChange(e);
-          setDraft({ ...values, priority: Number(e.target.value) });
+        
+        const handlePriorityChange = (value: string) => {
+          const numValue = Number(value);
+          setFieldValue("priority", numValue);
+          setDraft({ ...values, priority: numValue });
         };
+        
         const handleDateChange = (dateString: string) => {
           setDraft({ ...values, date: dateString });
         };
@@ -141,29 +149,38 @@ export default function TaskForm({ afterSubmit }: AddTaskFormProps) {
                   <label htmlFor={`${fieldId}-priority`} className="text-base leading-snug">
                     Task priority
                   </label>
-                  <div className="relative w-full">
-                    <Field
-                      as="select"
-                      name="priority"
+                  
+                  <Select
+                    value={String(values.priority)}
+                    onValueChange={handlePriorityChange}
+                  >
+                    <SelectTrigger
                       id={`${fieldId}-priority`}
-                      onChange={handlePriorityChange}
-                      className={`appearance-none pr-10 cursor-pointer ${baseInputStyles} ${
+                      className={`${baseInputStyles} ${
                         errors.priority && touched.priority ? errorInputStyles : ""
                       }`}
                     >
+                      <SelectValue placeholder="Select priority" />
+                    </SelectTrigger>
+                    
+                    <SelectContent 
+                      position="popper" 
+                      className="w-[var(--radix-select-trigger-width)] rounded-xl border-gray-300"
+                    >
                       {Array.from({ length: 10 }, (_, index) => index + 1).map(
                         (num) => (
-                          <option key={num} value={num}>
+                          <SelectItem
+                            key={num}
+                            value={String(num)}
+                            className="cursor-pointer rounded-lg focus:bg-accent focus:text-background focus:outline-none focus:ring-0 border-transparent"
+                          >
                             {num}
-                          </option>
+                          </SelectItem>
                         ),
                       )}
-                    </Field>
-                    
-                    <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
-                      <ChevronDown className="h-4 w-4 text-gray-500" />
-                    </div>
-                  </div>
+                    </SelectContent>
+                  </Select>
+
                   <ErrorMessage
                     name="priority"
                     component="span"

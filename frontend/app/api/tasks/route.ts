@@ -6,16 +6,7 @@ import { api } from "../api";
 
 export async function GET(request: NextRequest) {
   try {
-    const query = request.nextUrl.searchParams.get('search') ?? '';
-    const status = request.nextUrl.searchParams.get('status') ?? '';
-    const order = request.nextUrl.searchParams.get('sorting') ?? '';
-    const res = await api("/tasks", {
-    params: {
-      search: query,
-      status: status,
-      sorting: order,
-    },
-  });
+    const res = await api("/tasks", { params: request.nextUrl.searchParams });
     return NextResponse.json(res.data, { status: res.status });
   } catch (error) {
     if (isAxiosError(error)) {
