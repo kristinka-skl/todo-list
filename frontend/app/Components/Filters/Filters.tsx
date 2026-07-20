@@ -20,8 +20,8 @@ import {
 
 interface SearchFormProps {
   onSearchChange: (q: string) => void;
-  onStatusFilterChange: (s: string) => void;
-  onSortingOrderChange: (o: number | undefined) => void;
+  onStatusFilterChange: (s: string | undefined) => void;
+  onSortingOrderChange: (o: string | undefined) => void;
 }
 
 export default function Filters({
@@ -30,17 +30,11 @@ export default function Filters({
   onSortingOrderChange,
 }: SearchFormProps) {
   const handleSortingChange = (value: string) => {
-    if (value === "none") {
-      onSortingOrderChange(undefined);
-    } else if (value === "ascending") {
-      onSortingOrderChange(1);
-    } else if (value === "descending") {
-      onSortingOrderChange(0);
-    }
+    onSortingOrderChange(value !== 'none' ? value : undefined);
   };
 
-  const handleStatusFilter = (value?: string | undefined) => {
-    onStatusFilterChange(value || "all");
+  const handleStatusFilter = (value: string) => {
+    onStatusFilterChange(value !== 'all' ? value : undefined);
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {

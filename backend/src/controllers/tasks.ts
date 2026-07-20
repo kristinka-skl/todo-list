@@ -4,8 +4,6 @@ import type { Request, Response, NextFunction } from "express";
 
 export const getMyTasks = async (req: Request, res: Response) => {
   const { search, status, sorting } = req.query; 
-   const sortingOrder = Number(sorting);
-
   const tasksQuery = TasksCollection.find(); // TODO { userId: req.user._id }
   
   if (search) {
@@ -23,14 +21,11 @@ export const getMyTasks = async (req: Request, res: Response) => {
     });
   }
   
-
-  if(sorting && sortingOrder === 1){
+  if(sorting === 'ascending'){
     tasksQuery.sort({ priority: 1 });
-  } else if(sorting && sortingOrder === 0){
+  } else if(sorting === 'descending'){
     tasksQuery.sort({ priority: -1 });
   }
-  
-
 
   tasksQuery.sort({ date: 1 });
   const tasks = await tasksQuery;

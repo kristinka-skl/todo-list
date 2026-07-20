@@ -12,9 +12,9 @@ import Filters from "../Filters/Filters";
 import { cn } from "@/lib/utils";
 
 function TasksReminderCard() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [statusQuery, setStatusQuery] = useState("all");
-  const [sortingOrder, setSortingOrder] = useState<number | undefined>(undefined);
+  const [searchQuery, setSearchQuery] = useState<string | undefined>(undefined);
+  const [statusQuery, setStatusQuery] = useState<string | undefined>(undefined);
+  const [sortingOrder, setSortingOrder] = useState<string | undefined>(undefined);
 
   const { data, isError, error, isSuccess, isPending } = useQuery({
     queryKey: ["task", searchQuery, statusQuery, sortingOrder],
@@ -97,10 +97,10 @@ function TasksReminderCard() {
   };
 
   const changeQuery = useDebouncedCallback((query: string) => {
-    setSearchQuery(query);
+    setSearchQuery(query !== '' ? query : undefined);
   }, 1000);
 
-  const changeSorting = (order: number | undefined) => {
+  const changeSorting = (order: string | undefined) => {
     setSortingOrder(order);
   };
   return (
