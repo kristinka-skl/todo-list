@@ -7,11 +7,12 @@ export const nextServer: AxiosInstance = axios.create({
   baseURL: BASE_URL,
 });
 
-export async function getTasks(query: string, status: string): Promise<Task[]> {
+export async function getTasks(query: string, status: string, order: number | undefined): Promise<Task[]> {
   const { data } = await nextServer.get<Task[]>(`/tasks`, {
     params: {
       search: query,
       status: status,
+      sorting: order,
     },
   });
   return data;

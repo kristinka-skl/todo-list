@@ -14,10 +14,11 @@ import { cn } from "@/lib/utils";
 function TasksReminderCard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusQuery, setStatusQuery] = useState("all");
-  
+  const [sortingOrder, setSortingOrder] = useState<number | undefined>(undefined);
+
   const { data, isError, isSuccess, isPending } = useQuery({
-    queryKey: ["task", searchQuery, statusQuery],
-    queryFn: () => getTasks(searchQuery, statusQuery),
+    queryKey: ["task", searchQuery, statusQuery, sortingOrder],
+    queryFn: () => getTasks(searchQuery, statusQuery, sortingOrder),
     placeholderData: keepPreviousData,
     refetchOnMount: false,
   });
@@ -31,7 +32,12 @@ function TasksReminderCard() {
 
   const { overdueTasks, todayTasks, weekTasks, futureTasks } = useMemo(() => {
     if (!data)
-      return { overdueTasks: [], todayTasks: [], weekTasks: [], futureTasks: [] };
+      return {
+        overdueTasks: [],
+        todayTasks: [],
+        weekTasks: [],
+        futureTasks: [],
+      };
 
     const today = startOfDay(new Date());
     const nextWeekLimit = addDays(today, 7);
@@ -48,25 +54,28 @@ function TasksReminderCard() {
         if (!task.isDone) overdueList.push(task);
       } else if (isSameDay(taskDate, today)) {
         todayList.push(task);
-      } else if (isAfter(taskDate, today) && !isAfter(taskDate, nextWeekLimit)) {
+      } else if (
+        isAfter(taskDate, today) &&
+        !isAfter(taskDate, nextWeekLimit)
+      ) {
         weekList.push(task);
       } else if (isAfter(taskDate, nextWeekLimit)) {
         futureList.push(task);
       }
     });
 
-    return { 
-      overdueTasks: overdueList, 
-      todayTasks: todayList, 
-      weekTasks: weekList, 
-      futureTasks: futureList 
+    return {
+      overdueTasks: overdueList,
+      todayTasks: todayList,
+      weekTasks: weekList,
+      futureTasks: futureList,
     };
   }, [data]);
 
   const renderTaskSection = (
     title: string,
     tasks: typeof data,
-    isOverdue = false
+    isOverdue = false,
   ) => {
     if (!tasks || tasks.length === 0) return null;
     return (
@@ -74,7 +83,7 @@ function TasksReminderCard() {
         <h4
           className={cn(
             "text-base md:text-lg font-semibold tracking-tight",
-            isOverdue ? "text-destructive" : "text-foreground"
+            isOverdue ? "text-destructive" : "text-foreground",
           )}
         >
           {title}
@@ -92,16 +101,22 @@ function TasksReminderCard() {
     setSearchQuery(query);
   }, 1000);
 
+  const changeSorting = (order: number | undefined) => {
+    setSortingOrder(order);
+  };
   return (
     <>
-     
       <div className="w-full max-w-[335px] md:max-w-2xl mx-auto p-6 md:p-8 bg-[var(--color-scheme-foreground)] text-foreground shadow-sm rounded-[32px] flex flex-col">
         <div className="flex flex-col items-center gap-4 mb-6">
           <h3 className="text-xl md:text-2xl font-bold tracking-wide">
             My tasks
           </h3>
           <div className="w-full">
-            <Filters onStatusFilterChange={(status)=>setStatusQuery(status)} onSearchChange={changeQuery} />
+            <Filters
+              onSortingOrderChange={changeSorting}
+              onStatusFilterChange={(status) => setStatusQuery(status)}
+              onSearchChange={changeQuery}
+            />
           </div>
         </div>
 
@@ -124,7 +139,7 @@ function TasksReminderCard() {
                   <p className="text-center text-muted-foreground py-8">
                     No active tasks
                   </p>
-              )}
+                )}
             </>
           ) : (
             <p className="text-center text-muted-foreground py-8">

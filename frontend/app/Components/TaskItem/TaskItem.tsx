@@ -87,8 +87,7 @@ export default function TaskItem({ task }: TaskItemProps) {
           checked={task.isDone}
           onCheckedChange={(checked) =>
             mutateUpdate({ id: task._id, isDone: checked as boolean })
-          }
-          disabled={isPending}
+          }          
           id={`task-${task._id}`}
           className="h-5 w-5 border-gray-400 data-[state=checked]:bg-accent data-[state=checked]:border-accent data-[state=checked]:text-white"
         />
