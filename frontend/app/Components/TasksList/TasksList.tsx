@@ -16,7 +16,9 @@ import Loader from "../Loader/Loader";
 function TasksReminderCard() {
   const [searchQuery, setSearchQuery] = useState<string | undefined>(undefined);
   const [statusQuery, setStatusQuery] = useState<string | undefined>(undefined);
-  const [sortingOrder, setSortingOrder] = useState<string | undefined>(undefined);
+  const [sortingOrder, setSortingOrder] = useState<string | undefined>(
+    undefined,
+  );
 
   const { data, isError, error, isSuccess, isPending, isFetching } = useQuery({
     queryKey: ["task", searchQuery, statusQuery, sortingOrder],
@@ -32,7 +34,6 @@ function TasksReminderCard() {
   }, [isError, error]);
 
   const { overdueTasks, todayTasks, weekTasks, futureTasks } = useMemo(() => {
-    
     if (!data)
       return {
         overdueTasks: [],
@@ -129,7 +130,7 @@ function TasksReminderCard() {
               <Loader />
             </div>
           ) : isError ? (
-            <div className="text-center py-8 px-4 border border-destructive/20 bg-destructive/5 rounded-2xl flex flex-col gap-2">
+            <div role="alert" className="text-center py-8 px-4 border border-destructive/20 bg-destructive/5 rounded-2xl flex flex-col gap-2">
               <p className="font-semibold text-destructive">
                 Service is temporarily unavailable
               </p>
@@ -146,11 +147,13 @@ function TasksReminderCard() {
             </div>
           ) : isSuccess && data?.length > 0 ? (
             <div
+              aria-live="polite"
+              aria-atomic="true"
               className={cn(
                 "transition-all duration-300 ease-in-out",
                 isFetching && !isPending
                   ? "opacity-50 pointer-events-none blur-[1px]"
-                  : "opacity-100 blur-0"
+                  : "opacity-100 blur-0",
               )}
             >
               {renderTaskSection("Overdue", overdueTasks, true)}

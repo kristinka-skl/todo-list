@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 const today = new Date();
 today.setHours(0, 0, 0, 0);
@@ -73,7 +74,9 @@ export default function TaskForm({ afterSubmit }: AddTaskFormProps) {
       }
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to create task");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to create task",
+      );
     },
   });
 
@@ -107,13 +110,13 @@ export default function TaskForm({ afterSubmit }: AddTaskFormProps) {
           handleChange(e);
           setDraft({ ...values, name: e.target.value });
         };
-        
+
         const handlePriorityChange = (value: string) => {
           const numValue = Number(value);
           setFieldValue("priority", numValue);
           setDraft({ ...values, priority: numValue });
         };
-        
+
         const handleDateChange = (dateString: string) => {
           setDraft({ ...values, date: dateString });
         };
@@ -125,9 +128,11 @@ export default function TaskForm({ afterSubmit }: AddTaskFormProps) {
                 Add Task
               </legend>
               <div className="flex flex-col gap-6">
-                
                 <div className="relative flex flex-col gap-2">
-                  <label htmlFor={`${fieldId}-name`} className="text-base leading-snug">
+                  <label
+                    htmlFor={`${fieldId}-name`}
+                    className="text-base leading-snug"
+                  >
                     Task name
                   </label>
                   <Field
@@ -136,6 +141,12 @@ export default function TaskForm({ afterSubmit }: AddTaskFormProps) {
                     id={`${fieldId}-name`}
                     placeholder="I am going to ..."
                     onChange={handleNameChange}
+                    aria-invalid={!!(errors.name && touched.name)}
+                    aria-describedby={
+                      errors.name && touched.name
+                        ? `${fieldId}-name-error`
+                        : undefined
+                    }
                     className={`${baseInputStyles} ${
                       errors.name && touched.name ? errorInputStyles : ""
                     }`}
@@ -143,30 +154,42 @@ export default function TaskForm({ afterSubmit }: AddTaskFormProps) {
                   <ErrorMessage
                     name="name"
                     component="span"
+                    id={`${fieldId}-name-error`}
                     className="absolute top-[73px] left-3 text-xs text-[var(--color-red)] font-normal"
                   />
                 </div>
 
                 <div className="relative flex flex-col gap-2">
-                  <label htmlFor={`${fieldId}-priority`} className="text-base leading-snug">
+                  <label
+                    htmlFor={`${fieldId}-priority`}
+                    className="text-base leading-snug"
+                  >
                     Task priority
                   </label>
-                  
+
                   <Select
                     value={String(values.priority)}
                     onValueChange={handlePriorityChange}
                   >
                     <SelectTrigger
                       id={`${fieldId}-priority`}
+                      aria-invalid={!!(errors.priority && touched.priority)}
+                      aria-describedby={
+                        errors.priority && touched.priority
+                          ? `${fieldId}-priority-error`
+                          : undefined
+                      }
                       className={`${baseInputStyles} ${
-                        errors.priority && touched.priority ? errorInputStyles : ""
+                        errors.priority && touched.priority
+                          ? errorInputStyles
+                          : ""
                       }`}
                     >
                       <SelectValue placeholder="Select priority" />
                     </SelectTrigger>
-                    
-                    <SelectContent 
-                      position="popper" 
+
+                    <SelectContent
+                      position="popper"
                       className="w-[var(--radix-select-trigger-width)] rounded-xl border-gray-300"
                     >
                       {Array.from({ length: 10 }, (_, index) => index + 1).map(
@@ -186,12 +209,16 @@ export default function TaskForm({ afterSubmit }: AddTaskFormProps) {
                   <ErrorMessage
                     name="priority"
                     component="span"
+                    id={`${fieldId}-priority-error`}
                     className="absolute top-[73px] left-3 text-xs text-[var(--color-red)] font-normal"
                   />
                 </div>
 
                 <div className="relative flex flex-col gap-2">
-                  <label htmlFor={`${fieldId}-date`} className="text-base leading-snug">
+                  <label
+                    htmlFor={`${fieldId}-date`}
+                    className="text-base leading-snug"
+                  >
                     Date
                   </label>
                   <Field
@@ -199,21 +226,33 @@ export default function TaskForm({ afterSubmit }: AddTaskFormProps) {
                     name="date"
                     component={CalendarDatePicker}
                     onDateSelect={handleDateChange}
+                    aria-invalid={!!(errors.date && touched.date)}
+                    aria-describedby={
+                      errors.date && touched.date
+                        ? `${fieldId}-date-error`
+                        : undefined
+                    }
                     className={baseInputStyles}
                   />
                   <ErrorMessage
                     name="date"
                     component="span"
+                    id={`${fieldId}-date-error`}
                     className="absolute top-[73px] left-3 text-xs text-[var(--color-red)] font-normal"
                   />
                 </div>
               </div>
             </fieldset>
-            
+
             <button
-              className="flex items-center justify-center rounded-[60px] p-4 w-full max-w-[335px] h-[44px] bg-accent font-medium text-base text-background mx-auto transition-opacity duration-300 hover:opacity-90 disabled:cursor-wait disabled:opacity-70"
+              className={cn(
+                "flex items-center justify-center rounded-[60px] p-4 w-full max-w-[335px] h-[44px] bg-accent font-medium text-base text-background mx-auto transition-opacity duration-300 hover:opacity-90 disabled:cursor-wait disabled:opacity-70",
+
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2",
+              )}
               type="submit"
               disabled={isPending}
+              aria-busy={isPending}
             >
               {isPending ? "Saving..." : "Save"}
             </button>
