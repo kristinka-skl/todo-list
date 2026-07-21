@@ -79,12 +79,12 @@ Create the necessary environment files in their respective workspace folders bas
 ```env
 PORT=3000
 # Replace with your actual database connection string
-MONGODB_URL=mongodb+srv://<username>_db_user:<password>@<username>cluster.xvioasn.mongodb.net/tasks?appName=<username>Cluster
+MONGODB_URL=mongodb+srv://<username>_db_user...
 ```
 **Frontend (`frontend/.env`):**
 ```env
 # Use the deployed backend URL
-BACKEND_API_URL=[https://todo-list-dw8a.onrender.com](https://todo-list-dw8a.onrender.com)
+BACKEND_API_URL=https://todo-list-dw8a.onrender.com
 NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
 
@@ -100,5 +100,3 @@ npm run dev:backend
 ```bash
 npm run dev:frontend
 ```
-
-The application should now be running. You can access the frontend at `http://localhost:3001` (or whichever port Next.js assigns).
