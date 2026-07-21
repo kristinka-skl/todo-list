@@ -29,7 +29,7 @@ export default function Filters({
   onStatusFilterChange,
   onSortingOrderChange,
 }: SearchFormProps) {
-  const handleSortingChange = (value: string) => {
+  const handleSortingChange = (value: string) => {    
     onSortingOrderChange(value !== 'none' ? value : undefined);
   };
 

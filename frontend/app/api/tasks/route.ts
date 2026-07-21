@@ -11,15 +11,16 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     if (isAxiosError(error)) {
       const status = error.response?.status || 503;
-      const message = error.response?.data?.error || "Backend server is unreachable";
+      const message =
+        error.response?.data?.error || "Backend server is unreachable";
       return NextResponse.json(
         { error: message, code: "BACKEND_ERROR" },
-        { status }
+        { status },
       );
     }
     return NextResponse.json(
       { error: "Internal Server Error", code: "UNKNOWN_ERROR" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

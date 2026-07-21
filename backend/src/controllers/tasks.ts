@@ -3,33 +3,34 @@ import { TasksCollection } from "../models/task.js";
 import type { Request, Response, NextFunction } from "express";
 
 export const getMyTasks = async (req: Request, res: Response) => {
-  const { search, status, sorting } = req.query; 
+  const { search, status, sorting } = req.query;
+
   const tasksQuery = TasksCollection.find(); // TODO { userId: req.user._id }
-  
+
   if (search) {
-    tasksQuery.where({ 
-      name: { 
-        $regex: search, 
-        $options: "i" 
-      } 
+    tasksQuery.where({
+      name: {
+        $regex: search,
+        $options: "i",
+      },
     });
   }
 
-  if(status && status !== "all"){
-    tasksQuery.where({ 
-      isDone: status === 'done'
+  if (status && status !== "all") {
+    tasksQuery.where({
+      isDone: status === "done",
     });
   }
-  
-  if(sorting === 'ascending'){
+
+  if (sorting === "ascending") {
     tasksQuery.sort({ priority: 1 });
-  } else if(sorting === 'descending'){
+  } else if (sorting === "descending") {
     tasksQuery.sort({ priority: -1 });
   }
 
   tasksQuery.sort({ date: 1 });
   const tasks = await tasksQuery;
-  
+
   res.status(200).json(tasks);
 };
 

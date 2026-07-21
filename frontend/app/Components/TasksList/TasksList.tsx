@@ -9,14 +9,16 @@ import { getTasks } from "@/app/lib/api/api";
 
 import TaskItem from "../TaskItem/TaskItem";
 import Filters from "../Filters/Filters";
+
 import { cn } from "@/lib/utils";
+import Loader from "../Loader/Loader";
 
 function TasksReminderCard() {
   const [searchQuery, setSearchQuery] = useState<string | undefined>(undefined);
   const [statusQuery, setStatusQuery] = useState<string | undefined>(undefined);
   const [sortingOrder, setSortingOrder] = useState<string | undefined>(undefined);
 
-  const { data, isError, error, isSuccess, isPending } = useQuery({
+  const { data, isError, error, isSuccess, isPending, isFetching } = useQuery({
     queryKey: ["task", searchQuery, statusQuery, sortingOrder],
     queryFn: () => getTasks(searchQuery, statusQuery, sortingOrder),
     placeholderData: keepPreviousData,
@@ -30,6 +32,7 @@ function TasksReminderCard() {
   }, [isError, error]);
 
   const { overdueTasks, todayTasks, weekTasks, futureTasks } = useMemo(() => {
+    
     if (!data)
       return {
         overdueTasks: [],
@@ -97,12 +100,13 @@ function TasksReminderCard() {
   };
 
   const changeQuery = useDebouncedCallback((query: string) => {
-    setSearchQuery(query !== '' ? query : undefined);
+    setSearchQuery(query !== "" ? query : undefined);
   }, 1000);
 
   const changeSorting = (order: string | undefined) => {
     setSortingOrder(order);
   };
+
   return (
     <>
       <div className="w-full max-w-[335px] md:max-w-2xl mx-auto p-6 md:p-8 bg-[var(--color-scheme-foreground)] text-foreground shadow-sm rounded-[32px] flex flex-col">
@@ -119,26 +123,36 @@ function TasksReminderCard() {
           </div>
         </div>
 
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-full min-h-[200px]">
           {isPending ? (
-          <p className="text-center text-muted-foreground py-8 animate-pulse">
-            Loading tasks...
-          </p>
-        ) : isError ? (
-          <div className="text-center py-8 px-4 border border-destructive/20 bg-destructive/5 rounded-2xl flex flex-col gap-2">
-            <p className="font-semibold text-destructive">Service is temporarily unavailable</p>
-            <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-              We&apos;re having trouble connecting to the database. Please verify your connection or try again later.
-            </p>
-            <button 
-              onClick={() => window.location.reload()} 
-              className="mt-2 text-xs bg-destructive text-white px-3 py-1.5 rounded-lg w-fit mx-auto hover:opacity-90 transition-opacity"
+            <div className="flex items-center justify-center py-12">
+              <Loader />
+            </div>
+          ) : isError ? (
+            <div className="text-center py-8 px-4 border border-destructive/20 bg-destructive/5 rounded-2xl flex flex-col gap-2">
+              <p className="font-semibold text-destructive">
+                Service is temporarily unavailable
+              </p>
+              <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+                We&apos;re having trouble connecting to the database. Please
+                verify your connection or try again later.
+              </p>
+              <button
+                onClick={() => window.location.reload()}
+                className="mt-2 text-xs bg-destructive text-white px-3 py-1.5 rounded-lg w-fit mx-auto hover:opacity-90 transition-opacity"
+              >
+                Reload application
+              </button>
+            </div>
+          ) : isSuccess && data?.length > 0 ? (
+            <div
+              className={cn(
+                "transition-all duration-300 ease-in-out",
+                isFetching && !isPending
+                  ? "opacity-50 pointer-events-none blur-[1px]"
+                  : "opacity-100 blur-0"
+              )}
             >
-              Reload application
-            </button>
-          </div>
-        ) : isSuccess && data?.length > 0 ? (
-          <>
               {renderTaskSection("Overdue", overdueTasks, true)}
               {renderTaskSection("Today", todayTasks)}
               {renderTaskSection("This week", weekTasks)}
@@ -149,10 +163,10 @@ function TasksReminderCard() {
                 weekTasks.length === 0 &&
                 futureTasks.length === 0 && (
                   <p className="text-center text-muted-foreground py-8">
-                    No active tasks
+                    No active tasks match your filters
                   </p>
                 )}
-            </>
+            </div>
           ) : (
             <p className="text-center text-muted-foreground py-8">
               You do not have any tasks yet
