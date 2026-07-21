@@ -2,42 +2,58 @@ import createHttpError from "http-errors";
 import { TasksCollection } from "../models/task.js";
 import type { Request, Response, NextFunction } from "express";
 
-export const getMyTasks = async (req: Request, res: Response) => {
-  const { search, status, sorting } = req.query; 
-  const tasksQuery = TasksCollection.find(); // TODO { userId: req.user._id }
-  
-  if (search) {
-    tasksQuery.where({ 
-      name: { 
-        $regex: search, 
-        $options: "i" 
-      } 
-    });
-  }
+export const getMyTasks = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { search, status, sorting } = req.query;
+    const tasksQuery = TasksCollection.find(); // TODO { userId: req.user._id }
 
-  if(status && status !== "all"){
-    tasksQuery.where({ 
-      isDone: status === 'done'
-    });
-  }
-  
-  if(sorting === 'ascending'){
-    tasksQuery.sort({ priority: 1 });
-  } else if(sorting === 'descending'){
-    tasksQuery.sort({ priority: -1 });
-  }
+    if (search) {
+      tasksQuery.where({
+        name: {
+          $regex: search,
+          $options: "i",
+        },
+      });
+    }
 
-  tasksQuery.sort({ date: 1 });
-  const tasks = await tasksQuery;
-  
-  res.status(200).json(tasks);
+    if (status && status !== "all") {
+      tasksQuery.where({
+        isDone: status === "done",
+      });
+    }
+
+    if (sorting === "ascending") {
+      tasksQuery.sort({ priority: 1 });
+    } else if (sorting === "descending") {
+      tasksQuery.sort({ priority: -1 });
+    }
+
+    tasksQuery.sort({ date: 1 });
+    const tasks = await tasksQuery;
+
+    res.status(200).json(tasks);
+  } catch (error) {
+    next(error);
+  }
 };
 
-export const createTask = async (req: Request, res: Response) => {
-  const task = await TasksCollection.create({
-    ...req.body, // TODO userId: req.user._id,
-  });
-  res.status(201).json(task);
+export const createTask = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const task = await TasksCollection.create({
+      ...req.body, // TODO userId: req.user._id,
+    });
+    res.status(201).json(task);
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const updateTaskStatus = async (
@@ -45,19 +61,23 @@ export const updateTaskStatus = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const { taskId } = req.params;
-  const { isDone } = req.body;
-  const task = await TasksCollection.findOneAndUpdate(
-    {
-      _id: taskId, // TODO userId: req.user._id
-    },
-    { isDone },
-    { new: true },
-  );
-  if (!task) {
-    return next(createHttpError(404, "Task not found"));
+  try {
+    const { taskId } = req.params;
+    const { isDone } = req.body;
+    const task = await TasksCollection.findOneAndUpdate(
+      {
+        _id: taskId, // TODO userId: req.user._id
+      },
+      { isDone },
+      { new: true },
+    );
+    if (!task) {
+      return next(createHttpError(404, "Task not found"));
+    }
+    res.status(200).json(task);
+  } catch (error) {
+    next(error);
   }
-  res.status(200).json(task);
 };
 
 export const deleteTask = async (
@@ -65,12 +85,16 @@ export const deleteTask = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const { taskId } = req.params;
-  const task = await TasksCollection.findOneAndDelete({
-    _id: taskId, // TODO userId: req.user._id
-  });
-  if (!task) {
-    return next(createHttpError(404, "Task not found"));
+  try {
+    const { taskId } = req.params;
+    const task = await TasksCollection.findOneAndDelete({
+      _id: taskId, // TODO userId: req.user._id
+    });
+    if (!task) {
+      return next(createHttpError(404, "Task not found"));
+    }
+    res.status(200).json(task);
+  } catch (error) {
+    next(error);
   }
-  res.status(200).json(task);
 };

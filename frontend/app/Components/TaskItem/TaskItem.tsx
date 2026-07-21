@@ -30,8 +30,8 @@ export default function TaskItem({ task }: TaskItemProps) {
       queryClient.invalidateQueries({ queryKey: ["task"] });
       toast.success("Successfully deleted!");
     },
-    onError: () => {
-      toast.error("Sorry, something went wrong. Please try again.");
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : "Failed to delete task");
     },
   });
 
@@ -48,11 +48,11 @@ export default function TaskItem({ task }: TaskItemProps) {
       });
       return { previousTasks };
     },
-    onError: (err, newStatus, context) => {
+    onError: (error, newStatus, context) => {
       if (context?.previousTasks) {
         queryClient.setQueryData(["task"], context.previousTasks);
       }
-      toast.error("Failed to update task");
+      toast.error(error instanceof Error ? error.message : "Failed to update task");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["task"] });
@@ -76,6 +76,7 @@ export default function TaskItem({ task }: TaskItemProps) {
             getPriorityBadgeStyles(task.priority),
           )}
         >
+          <span className="sr-only">Priority </span>
           {task.priority}
         </span>
       </div>
@@ -98,10 +99,14 @@ export default function TaskItem({ task }: TaskItemProps) {
           task.isDone && "line-through text-muted-foreground",
         )}
       >
+        <span className="sr-only">
+          {task.isDone ? "Completed task: " : "Task: "}
+        </span>
         {task.name}
       </label>
 
       <span className="text-base text-muted-foreground text-right whitespace-nowrap pt-0.5">
+        <span className="sr-only">Due date </span>
         {formattedDate}
       </span>
 

@@ -20,20 +20,38 @@ export async function getTasks(search?: string, status?: string, sorting?: strin
     throw new Error("Network error occurred");
   }
 }
-
 export async function createTask(newTask: TaskFormData): Promise<Task> {
-  const { data } = await nextServer.post<Task>(`/tasks`, newTask);
-  return data;
+  try {
+    const { data } = await nextServer.post<Task>(`/tasks`, newTask);
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response?.data) {
+      throw new Error(error.response.data.error || "Failed to create task");
+    }
+    throw new Error("Network error occurred");
+  }
 }
-export async function updateTaskStatus({
-  id,
-  isDone,
-}: UpdateTaskStatus): Promise<Task> {
-  const { data } = await nextServer.patch<Task>(`/tasks/${id}`, { isDone });
-  return data;
+
+export async function updateTaskStatus({ id, isDone }: UpdateTaskStatus): Promise<Task> {
+  try {
+    const { data } = await nextServer.patch<Task>(`/tasks/${id}`, { isDone });
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response?.data) {
+      throw new Error(error.response.data.error || "Failed to update task");
+    }
+    throw new Error("Network error occurred");
+  }
 }
 
 export async function deleteTask(id: string): Promise<Task> {
-  const { data } = await nextServer.delete<Task>(`/tasks/${id}`);
-  return data;
+  try {
+    const { data } = await nextServer.delete<Task>(`/tasks/${id}`);
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response?.data) {
+      throw new Error(error.response.data.error || "Failed to delete task");
+    }
+    throw new Error("Network error occurred");
+  }
 }
