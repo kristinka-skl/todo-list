@@ -9,7 +9,7 @@ export const getTasksQuerySchema = {
     // perPage: Joi.number().integer().min(5).max(20).default(10),    
     search: Joi.string().trim().allow(''),
     status: Joi.string().valid('all', 'done', 'undone'),
-    sorting: Joi.string().trim().allow(''),
+    sorting: Joi.string().valid('ascending', 'descending', '').trim().allow(''),
   }),
 }
 

@@ -30,8 +30,8 @@ export default function TaskItem({ task }: TaskItemProps) {
       queryClient.invalidateQueries({ queryKey: ["task"] });
       toast.success("Successfully deleted!");
     },
-    onError: () => {
-      toast.error("Sorry, something went wrong. Please try again.");
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : "Failed to delete task");
     },
   });
 
@@ -48,11 +48,11 @@ export default function TaskItem({ task }: TaskItemProps) {
       });
       return { previousTasks };
     },
-    onError: (err, newStatus, context) => {
+    onError: (error, newStatus, context) => {
       if (context?.previousTasks) {
         queryClient.setQueryData(["task"], context.previousTasks);
       }
-      toast.error("Failed to update task");
+      toast.error(error instanceof Error ? error.message : "Failed to update task");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["task"] });

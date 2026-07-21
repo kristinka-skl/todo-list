@@ -72,7 +72,9 @@ export default function TaskForm({ afterSubmit }: AddTaskFormProps) {
         afterSubmit();
       }
     },
-    onError: () => toast.error("Sorry, something went wrong, please try again"),
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : "Failed to create task");
+    },
   });
 
   const handleSubmit = (
